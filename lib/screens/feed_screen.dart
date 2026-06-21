@@ -6,6 +6,7 @@ import '../services/firestore_service.dart';
 import '../models/post.dart';
 import '../widgets/post_card.dart';
 import '../widgets/bottom_nav.dart';
+import '../widgets/story_circle.dart';
 import 'profile_screen.dart';
 import 'create_post_screen.dart';
 import 'chat_screen.dart';
@@ -21,6 +22,59 @@ class FeedScreen extends StatefulWidget {
 class _FeedScreenState extends State<FeedScreen> {
   int _currentIndex = 0;
   final FirestoreService _firestore = FirestoreService();
+
+  // Demo stories
+  final List<StoryData> _demoStories = [
+    StoryData(
+      userId: 'current_user',
+      username: 'Your Story',
+      userAvatar: '',
+      createdAt: DateTime.now(),
+      isViewed: false,
+    ),
+    StoryData(
+      userId: 'user1',
+      username: 'anime.moments',
+      userAvatar: 'https://ui-avatars.com/api/?name=AM&background=FF7A00&color=fff&size=100',
+      createdAt: DateTime.now().subtract(const Duration(hours: 1)),
+      isViewed: false,
+    ),
+    StoryData(
+      userId: 'user2',
+      username: 'naruto_luz',
+      userAvatar: 'https://ui-avatars.com/api/?name=NL&background=FF7A00&color=fff&size=100',
+      createdAt: DateTime.now().subtract(const Duration(hours: 2)),
+      isViewed: true,
+    ),
+    StoryData(
+      userId: 'user3',
+      username: 'daily.inspiration',
+      userAvatar: 'https://ui-avatars.com/api/?name=DI&background=FF7A00&color=fff&size=100',
+      createdAt: DateTime.now().subtract(const Duration(hours: 3)),
+      isViewed: false,
+    ),
+    StoryData(
+      userId: 'user4',
+      username: 'Tokyo_Japan',
+      userAvatar: 'https://ui-avatars.com/api/?name=TJ&background=FF7A00&color=fff&size=100',
+      createdAt: DateTime.now().subtract(const Duration(hours: 4)),
+      isViewed: false,
+    ),
+    StoryData(
+      userId: 'user5',
+      username: 'animeworld',
+      userAvatar: 'https://ui-avatars.com/api/?name=AW&background=FF7A00&color=fff&size=100',
+      createdAt: DateTime.now().subtract(const Duration(hours: 5)),
+      isViewed: true,
+    ),
+    StoryData(
+      userId: 'user6',
+      username: 'izuchu_uchiha',
+      userAvatar: 'https://ui-avatars.com/api/?name=IU&background=FF7A00&color=fff&size=100',
+      createdAt: DateTime.now().subtract(const Duration(hours: 6)),
+      isViewed: false,
+    ),
+  ];
 
   final List<Widget> _pages = [];
 
@@ -97,48 +151,9 @@ class FeedPage extends StatelessWidget {
       body: Column(
         children: [
           // Stories
-          SizedBox(
-            height: 100,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              itemCount: 10,
-              itemBuilder: (context, index) {
-                return Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    children: [
-                      Container(
-                        width: 65,
-                        height: 65,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          border: Border.all(
-                            color: const Color(0xFFFF7A00),
-                            width: 3,
-                          ),
-                          image: DecorationImage(
-                            image: index == 0
-                              ? const NetworkImage(
-                                  'https://ui-avatars.com/api/?name=Your+Story&background=FF7A00&color=fff&size=100'
-                                )
-                              : const NetworkImage(
-                                  'https://ui-avatars.com/api/?name=Anime+User&background=2A2A2E&color=fff&size=100'
-                                ),
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        index == 0 ? 'Your Story' : 'user_${index}',
-                        style: const TextStyle(fontSize: 10, color: Colors.grey),
-                      ),
-                    ],
-                  ),
-                );
-              },
-            ),
+          StoriesList(
+            stories: (context as _FeedScreenState)._demoStories,
+            currentUserId: auth.user!.uid,
           ),
           
           // Posts
@@ -154,10 +169,14 @@ class FeedPage extends StatelessWidget {
                 }
                 if (snapshot.data!.isEmpty) {
                   return const Center(
-                    child: Text('No posts yet. Create one!'),
+                    child: Text(
+                      'No posts yet. Create one!',
+                      style: TextStyle(color: Colors.grey),
+                    ),
                   );
                 }
                 return ListView.builder(
+                  padding: const EdgeInsets.only(top: 8),
                   itemCount: snapshot.data!.length,
                   itemBuilder: (context, index) {
                     final post = snapshot.data![index];
@@ -182,9 +201,23 @@ class ReelsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Center(
-      child: Text(
-        'Reels Coming Soon!',
-        style: TextStyle(color: Colors.white, fontSize: 20),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            '🎬 Reels',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          SizedBox(height: 8),
+          Text(
+            'Coming Soon!',
+            style: TextStyle(color: Colors.grey),
+          ),
+        ],
       ),
     );
   }
